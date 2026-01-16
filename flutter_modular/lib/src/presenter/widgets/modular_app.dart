@@ -15,23 +15,21 @@ class ModularApp extends StatefulWidget {
   /// Home application containing the MaterialApp or CupertinoApp.
   final Widget child;
 
-  ModularApp({
+  /// Enable debug mode for logging
+  final bool debugMode;
+
+  /// Prohibits taking any bind of parent modules, forcing the imports
+  /// of the same in the current module to be accessed.
+  /// This is the same behavior as the system. Default is false;
+  final bool notAllowedParentBinds;
+
+  const ModularApp({
     Key? key,
     required this.module,
     required this.child,
-
-    /// Home application containing the MaterialApp or CupertinoApp.
-    bool debugMode = true,
-
-    /// Prohibits taking any bind of parent modules, forcing the imports
-    /// of the same in the current module to be accessed.
-    /// This is the same behavior as the system. Default is false;
-    bool notAllowedParentBinds = false,
-  }) : super(key: key) {
-    (Modular as ModularBase).flags.experimentalNotAllowedParentBinds =
-        notAllowedParentBinds;
-    (Modular as ModularBase).flags.isDebug = debugMode;
-  }
+    this.debugMode = true,
+    this.notAllowedParentBinds = false,
+  }) : super(key: key);
 
   @override
   ModularAppState createState() => ModularAppState();
@@ -41,8 +39,14 @@ class ModularAppState extends State<ModularApp> {
   @override
   void initState() {
     super.initState();
+    // Initialize fresh injectors for this ModularApp instance
+    ModularInjectors.initialize();
+    // Configure flags after injectors are ready
+    (Modular as ModularBase).flags.experimentalNotAllowedParentBinds =
+        widget.notAllowedParentBinds;
+    (Modular as ModularBase).flags.isDebug = widget.debugMode;
     Modular.init(widget.module);
-    if ((Modular as ModularBase).flags.isDebug) {
+    if (widget.debugMode) {
       setPrintResolver(debugPrint);
     }
   }
@@ -51,6 +55,8 @@ class ModularAppState extends State<ModularApp> {
   void dispose() {
     Modular.destroy();
     printResolverFunc?.call('-- ${widget.module.runtimeType} DISPOSED');
+    // Dispose all injectors - this ensures complete cleanup
+    ModularInjectors.dispose();
     cleanGlobals();
     super.dispose();
   }
