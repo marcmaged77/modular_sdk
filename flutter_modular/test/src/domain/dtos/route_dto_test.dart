@@ -1,4 +1,4 @@
-import 'package:flutter_modular/src/domain/dtos/route_dto.dart';
+import 'package:flutter_modular_lc/src/domain/dtos/route_dto.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

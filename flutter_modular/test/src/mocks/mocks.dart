@@ -1,6 +1,6 @@
-import 'package:flutter_modular/src/domain/services/bind_service.dart';
-import 'package:flutter_modular/src/domain/services/module_service.dart';
-import 'package:flutter_modular/src/domain/services/route_service.dart';
+import 'package:flutter_modular_lc/src/domain/services/bind_service.dart';
+import 'package:flutter_modular_lc/src/domain/services/module_service.dart';
+import 'package:flutter_modular_lc/src/domain/services/route_service.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:modular_core/modular_core.dart';
 

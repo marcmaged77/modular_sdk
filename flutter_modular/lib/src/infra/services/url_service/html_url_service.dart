@@ -2,7 +2,7 @@
 
 import 'dart:html';
 
-import 'package:flutter_modular/flutter_modular.dart';
+import 'package:flutter_modular_lc/flutter_modular.dart';
 import 'package:flutter_web_plugins/url_strategy.dart';
 
 import 'url_service.dart';

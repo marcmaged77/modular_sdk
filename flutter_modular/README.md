@@ -1,128 +1,260 @@
-[![codecov](https://codecov.io/gh/Flutterando/modular/branch/master/graph/badge.svg?token=uO4x25wWuU)](https://codecov.io/gh/Flutterando/modular)
-![CI](https://github.com/Flutterando/modular/workflows/CI/badge.svg)
-![LICENSE](https://img.shields.io/hexpm/l/modular)
-[![pub package](https://img.shields.io/pub/v/flutter_modular.svg)](https://pub.dev/packages/flutter_modular)
-[![GitHub stars](https://badgen.net/github/stars/Flutterando/modular)](https://GitHub.com/Flutterando/modular/stargazers/)
-[![All Contributors](https://img.shields.io/badge/all_contributors-46-orange.svg?style=flat-square)](#contributors-)
+# Flutter Modular LC (Lifecycle)
 
-## Flutter Modular
+[![pub package](https://img.shields.io/pub/v/flutter_modular_lc.svg)](https://pub.dev/packages/flutter_modular_lc)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-![flutter_modular](https://raw.githubusercontent.com/Flutterando/modular/master/flutter_modular.png)
+> **A fork of [flutter_modular](https://pub.dev/packages/flutter_modular) with proper Dependency Injection lifecycle management.**
 
-Let's find out how to implement a Modular structure in your project.
+This package fixes critical singleton/binding disposal issues that occur during app restart, hot reload, module rebuild, and widget disposal.
 
-## What is Modular?
+---
 
-Modular proposes to solve two problems:
-- Modularized routes.
-- Modularized Dependency Injection.
+## 🐛 The Problem
 
-In a monolithic architecture, where we have our entire application as a single module, we design our software in a quick and
-elegant way, taking advantage of all the amazing features of Flutter💙. However, producing a larger app in a "monolithic" way
-can generate technical debt in both maintanance and scalability. With this in mind, developers adopted architectural strategies to better divide the code, minimizing the negative impacts on the project's maintainability and scalability..
+The original `flutter_modular` has a **DI disposal bug** where old dependency bindings and singletons are **NOT properly disposed** when:
 
-By better dividing the scope of features, we gain:
+- The app is restarted (hot restart)
+- A module is rebuilt
+- `ModularApp` widget is disposed and recreated
+- Navigating away and back to a modular SDK/feature
 
-- Improved understanding of features.
-- Less breaking changes.
-- Add new non-conflicting features.
-- Less blind spots in the project's main business rule.
-- Improved developer turnover.
+### Symptoms
 
-With a more readable code, we extend the life of the project. See example of a standard MVC with 3 features(Auth, Home, Product):
+- **Stale State**: Old singleton instances persist, causing unexpected behavior
+- **Memory Leaks**: Disposed widgets still hold references to old injector instances
+- **State Corruption**: New modules reuse old instances instead of fresh ones
+- **SDK Integration Issues**: Multiple SDKs with their own `ModularApp` instances conflict
 
-### A typical MVC
+### Root Cause
 
-    .
-    ├── models                                  # All models      
-    │   ├── auth_model.dart                     
-    │   ├── home_model.dart                     
-    │   └── product_model.dart         
-    ├── controller                              # All controllers
-    │   ├── auth_controller.dart                     
-    │   ├── home_controller.dart                     
-    │   └── product_controller.dart             
-    ├── views                                   # All views
-    │   ├── auth_page.dart                     
-    │   ├── home_page.dart                     
-    │   └── product_page.dart                   
-    ├── core                                    # Tools and utilities
-    ├── app_widget.dart                         # Main Widget containing MaterialApp 
-    └── main.dart                               # runApp 
+In the original `flutter_modular`, the injectors are declared as **top-level `final` variables**:
 
+```dart
+// ❌ PROBLEMATIC: These persist forever, even after dispose()
+final _innerInjector = AutoInjector(tag: 'ModularApp', ...);
+final injector = AutoInjector(tag: 'ModularCore', ...);
+```
 
-Here we have a default structure using MVC. This is incredibly useful in almost every application.
+This means:
+1. Injectors are created once when the library loads
+2. They are **never recreated** even after `ModularApp` is disposed
+3. `disposeRecursive()` clears bindings but the injector shell persists
+4. New `ModularApp` instances reuse the same injector with potentially stale registrations
 
-Let's see how the structure looks when we divide by scope: 
+---
 
+## ✅ The Fix
 
-### Structure divided by scope
+This package introduces `ModularInjectors` - a lifecycle-aware injector management system:
 
-    .                  
-    ├── features                                 # All features or Modules 
-    │   ├─ auth                                  # Auth's MVC       
-    │   │  ├── auth_model.dart   
-    │   │  ├── auth_controller.dart  
-    │   │  └── auth_page.dart                      
-    │   ├─ home                                  # Home's MVC       
-    │   │  ├── home_model.dart   
-    │   │  ├── home_controller.dart  
-    │   │  └── home_page.dart                        
-    │   └─ product                               # Product's MVC     
-    │      ├── product_model.dart   
-    │      ├── product_controller.dart
-    │      └── product_page.dart                    
-    ├── core                                     # Tools and utilities
-    ├── app_widget.dart                          # Main Widget containing MaterialApp 
-    └── main.dart                                # runApp 
+```dart
+// ✅ FIXED: Injectors are created fresh and disposed properly
+class ModularInjectors {
+  static AutoInjector? _innerInjector;
+  static AutoInjector? _injector;
 
+  /// Initialize fresh injectors - called in ModularApp.initState
+  static void initialize() {
+    dispose(); // Clean up any existing injectors first
+    _innerInjector = AutoInjector(tag: 'ModularApp', ...);
+    _injector = AutoInjector(tag: 'ModularCore', ...);
+  }
 
+  /// Dispose all injectors - called in ModularApp.dispose
+  static void dispose() {
+    _innerInjector?.disposeRecursive();
+    _injector?.disposeRecursive();
+    _innerInjector = null;
+    _injector = null;
+  }
+}
+```
 
-What we did in this structure was to continue using MVC, but this time in scope. This means that
-each feature has its own MVC, and this simple approach solves many scalability and maintainability issues.
-We call this approach "Smart Structure". But two things were still Global and clashed with the structure itself, so we created Modular to solve this impasse.
+### How It Works
 
-In short: Modular is a solution to modularize the route and dependency injection system, making each scope have
-its own routes and injections independent of any other factor in the structure.
-We create objects to group the Routes and Injections and call them **Modules**.
+| Lifecycle Event | Before (Broken) | After (Fixed) |
+|-----------------|-----------------|---------------|
+| `ModularApp` created | Reuses existing global injector | Creates fresh injectors via `ModularInjectors.initialize()` |
+| `ModularApp` disposed | Only clears some bindings | Fully disposes injectors and nulls references via `ModularInjectors.dispose()` |
+| Hot restart | Old singletons persist | Fresh injectors, fresh singletons |
+| Multiple SDKs | Injector conflicts | Each SDK lifecycle is isolated |
 
+---
 
+## 📦 Installation
 
-## Ready to get started?
+```yaml
+dependencies:
+  flutter_modular_lc: ^6.5.0
+```
 
-Modular is not only ingenious for doing something amazing like componentizing Routes and Dependency Injections, it's amazing
-for being able to do all this simply!
+Then run:
+```bash
+flutter pub get
+```
 
-Go to the next topic and start your journey towards an intelligent structure.
+---
 
-## Common questions
+## 🔄 Migration from flutter_modular
 
-- Does Modular work with any state management approach?
-    - Yes, the dependency injection system is agnostic to any kind of class
-     including the reactivity that makes up state management.
+Simply replace your import:
 
-- Can I use dynamic routes or Wildcards?
-    - Yes! The entire route tree responds as on the Web. Therefore, you can use dynamic parameters,
-     query, fragments or simply include a wildcard to enable a redirect
-     to a 404 page for example.
+```dart
+// Before
+import 'package:flutter_modular/flutter_modular.dart';
 
-- Do I need to create a Module for all features?
-    - No. You can create a module only when you think it's necessary or when the feature is no longer a part of
-    the scope in which it is being worked on.
+// After
+import 'package:flutter_modular_lc/flutter_modular.dart';
+```
 
+**No other code changes required!** The API is 100% compatible.
 
+---
 
+## 🚀 Usage
 
-# Getting started with Modular
+### Basic Usage (Same as flutter_modular)
 
-- [flutter_modular Documentation](https://modular.flutterando.com.br/docs/flutter_modular/start)
+```dart
+import 'package:flutter_modular_lc/flutter_modular.dart';
 
-- [Modular Site](https://modular.flutterando.com.br)
+void main() {
+  runApp(ModularApp(
+    module: AppModule(),
+    child: MaterialApp.router(
+      routerConfig: Modular.routerConfig,
+    ),
+  ));
+}
 
-## Features and bugs
+class AppModule extends Module {
+  @override
+  void binds(Injector i) {
+    i.addSingleton<MyService>(MyService.new);
+  }
 
-Please send feature requests and bugs at the [issue tracker](https://github.com/Flutterando/modular/issues).
+  @override
+  void routes(RouteManager r) {
+    r.child('/', child: (context) => HomePage());
+  }
+}
+```
 
-This README was created based on templates made available by Stagehand under a BSD-style [license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
+### SDK/Feature Module Pattern
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind are welcome!
+This package is especially useful when building SDKs or feature modules that have their own `ModularApp`:
+
+```dart
+class MySdkWrapper extends StatefulWidget {
+  @override
+  State<MySdkWrapper> createState() => _MySdkWrapperState();
+}
+
+class _MySdkWrapperState extends State<MySdkWrapper> {
+  @override
+  void initState() {
+    super.initState();
+    // Optional: Pre-initialize if needed before build
+    ModularInjectors.initialize();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ModularApp(
+      module: MySdkModule(),
+      child: MaterialApp.router(
+        routerConfig: Modular.routerConfig,
+      ),
+    );
+  }
+}
+```
+
+### Manual Lifecycle Control
+
+For advanced use cases, you can manually control injector lifecycle:
+
+```dart
+// Initialize fresh injectors
+ModularInjectors.initialize();
+
+// Check if initialized
+if (ModularInjectors.isInitialized) {
+  // Access injector
+  final service = injector.get<MyService>();
+}
+
+// Dispose when done
+ModularInjectors.dispose();
+```
+
+---
+
+## 🔍 Verifying the Fix
+
+To verify singletons are properly disposed:
+
+```dart
+class MyService implements Disposable {
+  MyService() {
+    print('MyService CREATED: ${identityHashCode(this)}');
+  }
+
+  @override
+  void dispose() {
+    print('MyService DISPOSED: ${identityHashCode(this)}');
+  }
+}
+```
+
+With this package, you'll see:
+```
+// First launch
+MyService CREATED: 123456789
+
+// After hot restart or ModularApp rebuild
+MyService DISPOSED: 123456789  // ✅ Old instance disposed
+MyService CREATED: 987654321   // ✅ Fresh instance created
+```
+
+---
+
+## 📋 API Reference
+
+### ModularInjectors
+
+| Method | Description |
+|--------|-------------|
+| `ModularInjectors.initialize()` | Creates fresh injectors. Automatically disposes existing ones first. |
+| `ModularInjectors.dispose()` | Disposes all injectors and clears references. |
+| `ModularInjectors.isInitialized` | Returns `true` if injectors are ready. |
+| `ModularInjectors.injector` | Access the main injector (throws if not initialized). |
+| `ModularInjectors.innerInjector` | Access the inner injector for module bindings. |
+
+### Backward Compatibility
+
+The global `injector` getter still works:
+```dart
+// This still works (delegates to ModularInjectors.injector)
+final service = injector.get<MyService>();
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit issues and pull requests.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🙏 Acknowledgments
+
+This is a fork of [flutter_modular](https://github.com/Flutterando/modular) by [Flutterando](https://github.com/Flutterando). All credit for the original architecture goes to them.
+
+This fork specifically addresses the DI lifecycle management issue to provide proper singleton disposal.

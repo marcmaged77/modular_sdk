@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_modular/flutter_modular.dart';
-import 'package:flutter_modular/src/domain/usecases/bind_module.dart';
-import 'package:flutter_modular/src/domain/usecases/replace_instance.dart';
-import 'package:flutter_modular/src/domain/usecases/unbind_module.dart';
+import 'package:flutter_modular_lc/flutter_modular.dart';
+import 'package:flutter_modular_lc/src/domain/usecases/bind_module.dart';
+import 'package:flutter_modular_lc/src/domain/usecases/replace_instance.dart';
+import 'package:flutter_modular_lc/src/domain/usecases/unbind_module.dart';
 import 'package:modular_core/modular_core.dart';
 
 import '../domain/usecases/dispose_bind.dart';

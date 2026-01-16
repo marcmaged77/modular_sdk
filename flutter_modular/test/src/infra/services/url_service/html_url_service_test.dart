@@ -1,4 +1,4 @@
-import 'package:flutter_modular/src/infra/services/url_service/url_service.dart';
+import 'package:flutter_modular_lc/src/infra/services/url_service/url_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

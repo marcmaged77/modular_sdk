@@ -2,8 +2,8 @@ library flutter_modular;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_modular/flutter_modular.dart';
-import 'package:flutter_modular/src/flutter_modular_module.dart';
+import 'package:flutter_modular_lc/flutter_modular.dart';
+import 'package:flutter_modular_lc/src/flutter_modular_module.dart';
 import 'package:modular_core/modular_core.dart';
 
 import 'src/presenter/modular_base.dart';

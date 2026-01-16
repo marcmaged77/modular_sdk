@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_modular/src/domain/usecases/replace_instance.dart';
+import 'package:flutter_modular_lc/src/domain/usecases/replace_instance.dart';
 import 'package:modular_core/modular_core.dart';
 
 import '../flutter_modular.dart';
@@ -53,6 +53,10 @@ class ModularInjectors {
 
   /// Initialize fresh injectors - call this in ModularApp.initState
   static void initialize() {
+    debugPrint('🟢 [flutter_modular_lc] ModularInjectors.initialize() called');
+    debugPrint('🟢 [flutter_modular_lc] _injector was: ${_injector?.hashCode}');
+    debugPrint(
+        '🟢 [flutter_modular_lc] _innerInjector was: ${_innerInjector?.hashCode}');
     // Dispose old injectors if they exist
     dispose();
 
@@ -64,6 +68,9 @@ class ModularInjectors {
         i.commit();
       },
     );
+
+    debugPrint(
+        '🟢 [flutter_modular_lc] Created fresh _innerInjector: ${_innerInjector?.hashCode}');
 
     // Create fresh main injector
     _injector = AutoInjector(
@@ -101,14 +108,24 @@ class ModularInjectors {
         i.commit();
       },
     );
+    debugPrint(
+        '🟢 [flutter_modular_lc] Created fresh _injector: ${_injector?.hashCode}');
+    debugPrint(
+        '🟢 [flutter_modular_lc] ModularInjectors.initialize() COMPLETED');
   }
 
   /// Dispose all injectors - call this in ModularApp.dispose
   static void dispose() {
+    debugPrint('🔴 [flutter_modular_lc] ModularInjectors.dispose() called');
+    debugPrint(
+        '🔴 [flutter_modular_lc] Disposing _innerInjector: ${_innerInjector?.hashCode}');
+    debugPrint(
+        '🔴 [flutter_modular_lc] Disposing _injector: ${_injector?.hashCode}');
     _innerInjector?.disposeRecursive();
     _injector?.disposeRecursive();
     _innerInjector = null;
     _injector = null;
+    debugPrint('🔴 [flutter_modular_lc] Injectors disposed and set to null');
   }
 }
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_modular/src/presenter/models/route.dart';
-import 'package:flutter_modular/src/presenter/navigation/custom_navigator.dart';
-import 'package:flutter_modular/src/presenter/navigation/modular_book.dart';
-import 'package:flutter_modular/src/presenter/navigation/modular_router_delegate.dart';
-import 'package:flutter_modular/src/presenter/navigation/router_outlet_delegate.dart';
+import 'package:flutter_modular_lc/src/presenter/models/route.dart';
+import 'package:flutter_modular_lc/src/presenter/navigation/custom_navigator.dart';
+import 'package:flutter_modular_lc/src/presenter/navigation/modular_book.dart';
+import 'package:flutter_modular_lc/src/presenter/navigation/modular_router_delegate.dart';
+import 'package:flutter_modular_lc/src/presenter/navigation/router_outlet_delegate.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

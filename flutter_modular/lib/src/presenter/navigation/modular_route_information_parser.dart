@@ -3,7 +3,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_modular/src/domain/errors/errors.dart';
+import 'package:flutter_modular_lc/src/domain/errors/errors.dart';
 import 'package:result_dart/result_dart.dart';
 
 import '../../../flutter_modular.dart';

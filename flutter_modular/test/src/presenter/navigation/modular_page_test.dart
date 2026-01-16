@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_modular/src/presenter/errors/errors.dart';
-import 'package:flutter_modular/src/presenter/models/modular_args.dart';
-import 'package:flutter_modular/src/presenter/models/route.dart';
-import 'package:flutter_modular/src/presenter/navigation/modular_page.dart';
+import 'package:flutter_modular_lc/src/presenter/errors/errors.dart';
+import 'package:flutter_modular_lc/src/presenter/models/modular_args.dart';
+import 'package:flutter_modular_lc/src/presenter/models/route.dart';
+import 'package:flutter_modular_lc/src/presenter/navigation/modular_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:modular_core/modular_core.dart';

@@ -1,3 +1,27 @@
+## [6.5.0] - 2025/01/16 (flutter_modular_lc)
+
+### 🔧 Major Fix: DI Lifecycle Management
+
+This release introduces `ModularInjectors` - a lifecycle-aware dependency injection system that properly disposes singletons and bindings.
+
+**What's Fixed:**
+- Singletons now properly dispose when `ModularApp` is disposed
+- Fresh injectors are created on each `ModularApp` initialization
+- No more stale state after hot restart, module rebuild, or navigation
+- Multiple SDK/feature modules with their own `ModularApp` no longer conflict
+
+**Breaking Changes:** None - API is 100% backward compatible.
+
+**New API:**
+- `ModularInjectors.initialize()` - Create fresh injectors
+- `ModularInjectors.dispose()` - Fully dispose all injectors
+- `ModularInjectors.isInitialized` - Check if ready
+- `ModularInjectors.injector` / `ModularInjectors.innerInjector` - Access injectors
+
+**Migration:** Simply replace `flutter_modular` with `flutter_modular_lc` in your imports.
+
+---
+
 ## [6.4.1] - 2025/06/12
 - Fix AppModule Dispose.
 

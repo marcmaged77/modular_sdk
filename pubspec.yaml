@@ -5,8 +5,8 @@ environment:
 
 workspace:
   - modular_core
-  - flutter_modular
+  # - flutter_modular  # Temporarily removed for standalone publishing
   - shelf_modular
   # examples
-  - flutter_modular/example
+  # - flutter_modular/example  # Temporarily removed for standalone publishing
   - shelf_modular/example

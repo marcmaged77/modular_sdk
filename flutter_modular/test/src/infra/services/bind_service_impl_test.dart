@@ -1,7 +1,7 @@
-import 'package:flutter_modular/flutter_modular.dart';
-import 'package:flutter_modular/src/domain/errors/errors.dart';
-import 'package:flutter_modular/src/domain/services/bind_service.dart';
-import 'package:flutter_modular/src/infra/services/bind_service_impl.dart';
+import 'package:flutter_modular_lc/flutter_modular.dart';
+import 'package:flutter_modular_lc/src/domain/errors/errors.dart';
+import 'package:flutter_modular_lc/src/domain/services/bind_service.dart';
+import 'package:flutter_modular_lc/src/infra/services/bind_service_impl.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

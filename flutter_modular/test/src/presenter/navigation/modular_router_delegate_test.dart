@@ -1,13 +1,13 @@
 // ignore_for_file: unawaited_futures
 
 import 'package:flutter/material.dart';
-import 'package:flutter_modular/src/domain/usecases/report_pop.dart';
-import 'package:flutter_modular/src/presenter/models/modular_args.dart';
-import 'package:flutter_modular/src/presenter/navigation/custom_navigator.dart';
-import 'package:flutter_modular/src/presenter/navigation/modular_book.dart';
-import 'package:flutter_modular/src/presenter/navigation/modular_page.dart';
-import 'package:flutter_modular/src/presenter/navigation/modular_route_information_parser.dart';
-import 'package:flutter_modular/src/presenter/navigation/modular_router_delegate.dart';
+import 'package:flutter_modular_lc/src/domain/usecases/report_pop.dart';
+import 'package:flutter_modular_lc/src/presenter/models/modular_args.dart';
+import 'package:flutter_modular_lc/src/presenter/navigation/custom_navigator.dart';
+import 'package:flutter_modular_lc/src/presenter/navigation/modular_book.dart';
+import 'package:flutter_modular_lc/src/presenter/navigation/modular_page.dart';
+import 'package:flutter_modular_lc/src/presenter/navigation/modular_route_information_parser.dart';
+import 'package:flutter_modular_lc/src/presenter/navigation/modular_router_delegate.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:modular_core/modular_core.dart';

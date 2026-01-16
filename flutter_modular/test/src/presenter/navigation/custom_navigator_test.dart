@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_modular/src/presenter/models/modular_navigator.dart';
-import 'package:flutter_modular/src/presenter/modular_base.dart';
-import 'package:flutter_modular/src/presenter/navigation/custom_navigator.dart';
+import 'package:flutter_modular_lc/src/presenter/models/modular_navigator.dart';
+import 'package:flutter_modular_lc/src/presenter/modular_base.dart';
+import 'package:flutter_modular_lc/src/presenter/navigation/custom_navigator.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

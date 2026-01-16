@@ -1,4 +1,4 @@
-import 'package:flutter_modular/src/presenter/models/route.dart';
+import 'package:flutter_modular_lc/src/presenter/models/route.dart';
 import 'package:modular_core/modular_core.dart';
 
 import '../guards/route_guard.dart';

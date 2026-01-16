@@ -1,5 +1,5 @@
-import 'package:flutter_modular/src/domain/dtos/route_dto.dart';
-import 'package:flutter_modular/src/infra/services/route_service_impl.dart';
+import 'package:flutter_modular_lc/src/domain/dtos/route_dto.dart';
+import 'package:flutter_modular_lc/src/infra/services/route_service_impl.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:modular_core/modular_core.dart';

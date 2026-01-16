@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_modular/src/flutter_modular_module.dart';
+import 'package:flutter_modular_lc/src/flutter_modular_module.dart';
 import 'package:modular_core/modular_core.dart';
 
 import '../../../flutter_modular.dart';
@@ -39,6 +39,8 @@ class ModularAppState extends State<ModularApp> {
   @override
   void initState() {
     super.initState();
+    debugPrint(
+        '🟢 [flutter_modular_lc] ModularAppState.initState() called for ${widget.module.runtimeType}');
     // Initialize fresh injectors for this ModularApp instance
     ModularInjectors.initialize();
     // Configure flags after injectors are ready
@@ -53,11 +55,14 @@ class ModularAppState extends State<ModularApp> {
 
   @override
   void dispose() {
+    debugPrint(
+        '🔴 [flutter_modular_lc] ModularAppState.dispose() called for ${widget.module.runtimeType}');
     Modular.destroy();
     printResolverFunc?.call('-- ${widget.module.runtimeType} DISPOSED');
     // Dispose all injectors - this ensures complete cleanup
     ModularInjectors.dispose();
     cleanGlobals();
+    debugPrint('🔴 [flutter_modular_lc] ModularAppState.dispose() COMPLETED');
     super.dispose();
   }
 

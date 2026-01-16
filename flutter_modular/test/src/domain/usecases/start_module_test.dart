@@ -1,4 +1,4 @@
-import 'package:flutter_modular/src/domain/usecases/start_module.dart';
+import 'package:flutter_modular_lc/src/domain/usecases/start_module.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:result_dart/result_dart.dart';
