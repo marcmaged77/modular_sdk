@@ -1,8 +1,8 @@
 name: flutter_modular_lc
 description: Flutter Modular with proper DI lifecycle management. Fork of flutter_modular that fixes singleton disposal issues on app restart, hot reload, and module rebuild.
-version: 6.5.0
-homepage: https://github.com/marcmaged77/modular_sdk
-repository: https://github.com/marcmaged77/modular_sdk
+version: 6.5.1
+homepage: https://github.com/marcmaged77/modular_sdk/tree/hot_fix_lc/flutter_modular
+repository: https://github.com/marcmaged77/modular_sdk/tree/hot_fix_lc
 issue_tracker: https://github.com/marcmaged77/modular_sdk/issues
 
 topics:
